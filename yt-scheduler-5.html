@@ -1,0 +1,1569 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>YT Scheduler Pro</title>
+<meta name="theme-color" content="#ff0000"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#ff0000;--red-d:#cc0000;--bg:#0a0a0a;--card:#141414;
+  --card2:#1e1e1e;--border:#2a2a2a;--text:#f0f0f0;--muted:#777;
+  --green:#00c853;--yellow:#ffd600;--blue:#4fc3f7;--purple:#ce93d8;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HEADER */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 16px;background:#0d0d0d;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;gap:8px;flex-wrap:wrap;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:34px;height:34px;background:var(--red);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px}
+.logo-sub{font-size:9px;color:var(--muted)}
+.header-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{padding:8px 14px;border-radius:8px;border:none;font-size:13px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;gap:6px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover,.btn-red:active{background:var(--red-d)}
+.btn-green{background:transparent;border:1px solid var(--green);color:var(--green)}
+.btn-blue{background:#001830;border:1px solid #0d3a6e;color:var(--blue)}
+.btn-dark{background:var(--card2);border:1px solid var(--border);color:var(--text)}
+.btn-danger{background:#1a0000;border:1px solid #4a0000;color:#ff6b6b}
+.btn-yellow{background:#1a1500;border:1px solid #4a3d00;color:var(--yellow)}
+
+/* USER INFO */
+#user-info{display:none;align-items:center;gap:8px;background:var(--card);
+  border:1px solid var(--border);border-radius:10px;padding:6px 10px 6px 8px}
+#user-photo{width:26px;height:26px;border-radius:50%;border:2px solid var(--green);object-fit:cover}
+.u-name{font-size:11px;font-weight:600}
+.u-ch{font-size:9px;color:var(--red);font-weight:700}
+
+/* RECONNECT BANNER */
+#reconnect-banner{
+  display:none;background:#1a0d00;border-bottom:2px solid var(--yellow);
+  padding:10px 16px;text-align:center;font-size:13px;color:var(--yellow);
+}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 60px)}
+.sidebar{width:190px;border-right:1px solid var(--border);padding:14px 8px;
+  display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;
+  border:none;background:none;color:var(--muted);font-size:13px;font-weight:500;
+  cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;text-align:left;transition:all .15s;
+  -webkit-tap-highlight-color:transparent}
+.nav-btn:hover,.nav-btn:active{background:var(--card2);color:var(--text)}
+.nav-btn.active{background:#1a0000;color:var(--red)}
+.content{flex:1;padding:16px;overflow-y:auto;min-width:0}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 12px}
+.stat-label{font-size:9px;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1}
+.stat-val.r{color:var(--red)}.stat-val.g{color:var(--green)}.stat-val.y{color:var(--yellow)}.stat-val.b{color:var(--blue)}
+.stat-hint{font-size:9px;color:var(--muted);margin-top:3px}
+
+/* DAILY LIMIT BANNER */
+#daily-banner{
+  background:#001a0d;border:1px solid #003a1a;border-radius:10px;
+  padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;flex-wrap:wrap
+}
+.daily-info{display:flex;align-items:center;gap:10px}
+.daily-count{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);line-height:1}
+.daily-label{font-size:11px;color:var(--muted)}
+.daily-label strong{color:var(--green);display:block;font-size:13px}
+.limit-pills{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.limit-pill{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;
+  border:1px solid var(--border);background:var(--card2);color:var(--muted);transition:all .15s}
+.limit-pill.active{background:#001a0d;border-color:var(--green);color:var(--green)}
+
+/* NEXT SLOTS */
+.slots-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.slot-chip{background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:6px 12px;font-size:11px;display:flex;align-items:center;gap:5px}
+.slot-chip.filled{border-color:var(--red);color:var(--red)}
+.slot-chip.open{border-color:#1a3a1a;color:var(--green)}
+
+/* SECTION */
+.sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.5px}
+
+/* QUEUE */
+#queue{display:flex;flex-direction:column;gap:8px}
+.q-item{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:12px 14px;display:flex;align-items:flex-start;gap:10px;transition:border-color .2s}
+.q-item:hover,.q-item:active{border-color:#3a3a3a}
+.q-num{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#333;width:22px;flex-shrink:0;margin-top:2px}
+.q-thumb{width:64px;height:40px;background:var(--card2);border:1px solid var(--border);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;cursor:pointer;flex-direction:column}
+.q-info{flex:1;min-width:0}
+.q-title{font-weight:600;font-size:13px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q-meta{font-size:10px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+.q-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.q-date{font-size:11px;font-weight:700}
+.q-time-text{font-size:10px;color:var(--muted)}
+.q-actions{display:flex;gap:4px}
+.icon-btn{width:30px;height:30px;border-radius:6px;border:1px solid var(--border);
+  background:var(--card2);color:var(--muted);cursor:pointer;font-size:12px;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.icon-btn:hover,.icon-btn:active{border-color:var(--red);color:var(--red)}
+.icon-btn.up:hover,.icon-btn.up:active{border-color:var(--green);color:var(--green)}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;
+  border-radius:20px;font-size:9px;font-weight:700}
+.badge.queued{background:#1c1c1c;color:var(--muted);border:1px solid #2a2a2a}
+.badge.scheduled{background:#001830;color:var(--blue);border:1px solid #0d3a6e}
+.badge.scheduled_yt{background:#0a001a;color:var(--purple);border:1px solid #4a148c}
+.badge.posted{background:#001800;color:var(--green);border:1px solid #1b5e20}
+.badge.uploading{background:#1a0000;color:var(--red);border:1px solid #4a0000;animation:pulse 1.5s infinite}
+.badge.copyright{background:#1a0800;color:#ff6b35;border:1px solid #8b2000}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* PROGRESS */
+.progress-bar{width:100%;height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;background:var(--red);border-radius:2px;transition:width .3s}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);
+  backdrop-filter:blur(4px);align-items:flex-end;justify-content:center;z-index:200}
+.overlay.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px 16px 0 0;
+  padding:20px 20px 32px;width:100%;max-width:500px;animation:slideup .25s ease;
+  max-height:92vh;overflow-y:auto}
+@media(min-width:600px){
+  .overlay{align-items:center}
+  .modal{border-radius:16px;max-width:440px;padding:24px;animation:fadeup .2s ease}
+}
+@keyframes slideup{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes fadeup{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.modal-drag{width:36px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px;display:none}
+@media(max-width:600px){.modal-drag{display:block}}
+.fg{margin-bottom:10px}
+.fg label{display:block;font-size:9px;color:var(--muted);margin-bottom:4px;
+  text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.fg input,.fg textarea,.fg select{width:100%;background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;padding:9px 12px;color:var(--text);font-size:14px;
+  font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s;
+  -webkit-appearance:none;appearance:none}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--red)}
+.fg textarea{resize:vertical;min-height:60px}
+.fg select option{background:#1e1e1e}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.file-zone{border:2px dashed var(--border);border-radius:8px;padding:16px;
+  text-align:center;cursor:pointer;transition:all .2s;color:var(--muted);font-size:12px;margin-bottom:10px;
+  -webkit-tap-highlight-color:transparent}
+.file-zone:hover,.file-zone:active{border-color:var(--red);color:var(--text)}
+.file-zone.has-file{border-color:var(--green);color:var(--green)}
+.m-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+
+/* AUTO-SCHEDULE SETTINGS MODAL */
+.setting-row{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:13px;font-weight:600}
+.setting-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.toggle{width:44px;height:24px;background:var(--card2);border:1px solid var(--border);
+  border-radius:12px;cursor:pointer;position:relative;transition:all .2s;flex-shrink:0}
+.toggle.on{background:#003a1a;border-color:var(--green)}
+.toggle::after{content:"";width:18px;height:18px;background:#555;border-radius:50%;
+  position:absolute;top:2px;left:3px;transition:all .2s}
+.toggle.on::after{background:var(--green);transform:translateX(20px)}
+.time-slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.time-slot-inp{background:var(--card2);border:1px solid var(--border);border-radius:8px;
+  padding:8px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;
+  outline:none;width:100%;text-align:center;-webkit-appearance:none;appearance:none}
+.time-slot-inp:focus{border-color:var(--blue)}
+
+/* CHANNEL PICKER */
+#ch-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);
+  backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;z-index:300}
+#ch-overlay.open{display:flex}
+.ch-modal{background:var(--card);border:1px solid var(--border);border-radius:16px 16px 0 0;
+  padding:20px 20px 32px;width:100%;max-width:500px;animation:slideup .25s ease}
+@media(min-width:600px){
+  #ch-overlay{align-items:center}
+  .ch-modal{border-radius:16px;max-width:400px}
+}
+.ch-card{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;
+  border:1px solid var(--border);background:var(--card2);cursor:pointer;
+  transition:border-color .15s;margin-bottom:8px;-webkit-tap-highlight-color:transparent}
+.ch-card:hover,.ch-card:active{border-color:var(--red)}
+
+/* PREVIEW */
+#prev-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);
+  align-items:center;justify-content:center;z-index:400;flex-direction:column;gap:12px;
+  padding:16px}
+#prev-overlay.open{display:flex}
+
+/* TOAST */
+#toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+  background:#1e1e1e;border:1px solid var(--border);border-radius:10px;
+  padding:12px 18px;font-size:13px;z-index:500;display:none;
+  max-width:90vw;line-height:1.5;text-align:center;white-space:nowrap}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:10px}
+.empty-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:5px}
+
+/* SETUP */
+.setup{max-width:540px;margin:0 auto}
+.step{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:10px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;background:var(--red);border-radius:50%;font-size:11px;font-weight:700;margin-bottom:7px}
+.step h3{font-size:14px;font-weight:700;margin-bottom:5px}
+.step p{font-size:12px;color:var(--muted);line-height:1.6}
+.code{background:#0a0a0a;border:1px solid var(--border);border-radius:6px;
+  padding:8px 12px;font-family:monospace;font-size:11px;color:var(--blue);
+  margin:5px 0;word-break:break-all;user-select:all}
+
+/* SCHEDULE INDICATOR */
+.sched-indicator{background:#001a0d;border:1px solid #003a1a;border-radius:8px;
+  padding:8px 12px;font-size:11px;color:var(--green);margin-top:6px;display:flex;align-items:center;gap:6px}
+.sched-dot{width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+
+/* MOBILE BOTTOM NAV */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;
+  background:#0d0d0d;border-top:1px solid var(--border);padding:6px 0 env(safe-area-inset-bottom);
+  z-index:90;justify-content:space-around}
+.bottom-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:8px 16px;border:none;background:none;color:var(--muted);
+  font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:color .15s;-webkit-tap-highlight-color:transparent}
+.bottom-nav-btn.active{color:var(--red)}
+.bottom-nav-btn .bnav-icon{font-size:20px}
+
+@media(max-width:650px){
+  .sidebar{display:none}
+  .bottom-nav{display:flex}
+  .layout{min-height:calc(100vh - 56px)}
+  .content{padding:12px 12px calc(env(safe-area-inset-bottom) + 68px)}
+  .stats{grid-template-columns:1fr 1fr;gap:8px}
+  .q-num{display:none}
+  .fg-row{grid-template-columns:1fr}
+  header{padding:8px 12px}
+  #toast{bottom:calc(env(safe-area-inset-bottom) + 72px)}
+}
+@media(max-width:380px){
+  .stats{grid-template-columns:1fr 1fr}
+  .stat-val{font-size:26px}
+  .btn{padding:7px 10px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- RECONNECT BANNER -->
+<div id="reconnect-banner">
+  ⚠️ Session ያረጀ — <button onclick="handleAuth()" style="background:var(--yellow);color:#000;border:none;border-radius:6px;padding:4px 12px;font-weight:700;cursor:pointer;margin-left:8px">🔄 ዳግም ያገናኝ</button>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">▶</div>
+    <div><div class="logo-name">YT Scheduler</div><div class="logo-sub">Auto Poster Pro</div></div>
+  </div>
+  <div class="header-right">
+    <div id="gist-header-status" onclick="setNav(document.querySelector('.nav-btn:last-child'),'setup');setBNav('setup')"
+      style="display:flex;align-items:center;gap:5px;cursor:pointer;padding:5px 9px;border-radius:8px;border:1px solid var(--border);background:var(--card)">
+      <div id="gist-sync-dot-hdr" style="width:7px;height:7px;border-radius:50%;background:#555"></div>
+      <span style="font-size:10px;color:var(--muted)">Gist</span>
+    </div>
+    <div id="user-info">
+      <img id="user-photo" src="" alt="" onerror="this.style.display='none'"/>
+      <div><div class="u-name" id="user-name"></div><div class="u-ch" id="sel-ch"></div></div>
+    </div>
+    <button id="auth-btn" class="btn btn-red" onclick="handleAuth()">🔗 ተገናኝ</button>
+    <button id="ch-btn" class="btn btn-dark" onclick="fetchChannels()" style="display:none">📺</button>
+    <button class="btn btn-yellow" onclick="openSettings()" style="font-size:16px;padding:7px 10px" title="Auto-Schedule Settings">⚙️</button>
+    <button id="logout-btn" class="btn btn-danger" onclick="handleLogout()" style="display:none">🚪</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="layout">
+  <nav class="sidebar">
+    <button class="nav-btn active" onclick="setNav(this,'queue')"><span>📋</span> ቪድዮ ዝርዝር</button>
+    <button class="nav-btn" onclick="setNav(this,'settings-page')"><span>⚙️</span> Auto-Schedule</button>
+    <button class="nav-btn" onclick="setNav(this,'setup')"><span>🛠️</span> Setup Guide</button>
+  </nav>
+  <main class="content">
+
+    <!-- QUEUE VIEW -->
+    <div id="view-queue">
+      <div id="auth-notice" style="background:#0d0d00;border:1px solid #3a3a00;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--yellow);display:flex;gap:8px;align-items:flex-start;">
+        ⚡ <span><strong>YouTube ጋር ተገናኝ</strong> — አንድ ጊዜ ብቻ! ቪድዮ ጨምር → ቀን/ሰዓት ያዝ → Auto ይለቃል!</span>
+      </div>
+
+      <!-- DAILY LIMIT BANNER -->
+      <div id="daily-banner">
+        <div class="daily-info">
+          <div>
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;margin-bottom:2px">ዛሬ ተለቋል</div>
+            <div style="display:flex;align-items:baseline;gap:4px">
+              <span class="daily-count" id="today-count">0</span>
+              <span style="color:var(--muted);font-size:12px">/ <span id="daily-limit-display">5</span></span>
+            </div>
+            <div class="daily-label">ቪድዮ ዛሬ</div>
+          </div>
+          <div style="width:1px;height:40px;background:var(--border)"></div>
+          <div>
+            <div style="font-size:9px;color:var(--muted);text-transform:uppercase;margin-bottom:2px">ቀጣይ</div>
+            <div id="next-slot-time" style="font-size:14px;font-weight:700;color:var(--blue)">—</div>
+            <div style="font-size:9px;color:var(--muted)">ቀጠሮ ሰዓት</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--muted);margin-bottom:5px;text-transform:uppercase">በቀን ገደብ</div>
+          <div class="limit-pills">
+            <div class="limit-pill" id="pill-3" onclick="setDailyLimit(3)">3 ቪድዮ</div>
+            <div class="limit-pill" id="pill-5" onclick="setDailyLimit(5)">5 ቪድዮ</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEXT SLOTS -->
+      <div id="slots-row" class="slots-row"></div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-label">ጠቅላላ</div><div class="stat-val" id="s-total">0</div><div class="stat-hint">ቪድዮዎች</div></div>
+        <div class="stat"><div class="stat-label">Queue</div><div class="stat-val r" id="s-queued">0</div><div class="stat-hint">ዝግጁ</div></div>
+        <div class="stat"><div class="stat-label">ቀጠሮ</div><div class="stat-val y" id="s-sched">0</div><div class="stat-hint">YouTube</div></div>
+        <div class="stat"><div class="stat-label">ተለቋል</div><div class="stat-val g" id="s-posted">0</div><div class="stat-hint">Live</div></div>
+      </div>
+
+      <div class="sec-header">
+        <div class="sec-title">📋 ቪድዮ ዝርዝር</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-yellow" onclick="autoScheduleAll()" title="ሁሉንም auto-schedule">🗓️ Auto</button>
+          <button class="btn btn-red" onclick="openModal()">+ ቪድዮ ጨምር</button>
+        </div>
+      </div>
+      <div id="queue"></div>
+    </div>
+
+    <!-- SETTINGS PAGE (sidebar view) -->
+    <div id="view-settings-page" style="display:none">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:16px">⚙️ Auto-Schedule ቅንብር</div>
+      <div id="settings-content-page"></div>
+    </div>
+
+    <!-- SETUP VIEW -->
+    <div id="view-setup" style="display:none">
+      <div class="setup">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:4px;">🛠️ Setup Guide</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:16px">GitHub Actions — browser ዝግ ቢሆን ይሰራል ✅</div>
+
+        <div style="background:#001830;border:1px solid #0d3a6e;border-radius:12px;padding:16px;margin-bottom:14px">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:8px">
+            🐙 GitHub Sync ቅንብር
+            <span id="gist-status-lbl" style="font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;background:#0a0a0a">⚠️ አልተቀናበረም</span>
+          </div>
+          <div class="fg"><label>Gist ID</label><input id="cfg-gist-id" placeholder="abc123def456..." autocomplete="off" style="font-family:monospace;font-size:13px"/></div>
+          <div class="fg"><label>GitHub PAT (gist scope)</label><input id="cfg-gist-pat" type="password" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" style="font-family:monospace;font-size:13px"/></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn btn-blue" onclick="saveGistConfig()">💾 አስቀምጥ</button>
+            <button class="btn btn-dark" onclick="syncToGist();showToast('⏳ Sync...')">🔄 Sync</button>
+            <button class="btn btn-dark" onclick="pullFromGist()">⬇️ Pull</button>
+            <div style="display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)">
+              <div id="gist-sync-dot" style="width:8px;height:8px;border-radius:50%;background:#555"></div>
+              <span id="gist-sync-time">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step"><div class="step-num">1</div><h3>GitHub Gist ፍጠር</h3>
+          <p>gist.github.com → New Gist → filename: <strong>yt-schedule.json</strong> → content: <code style="color:var(--blue)">[]</code> → Create secret gist</p>
+          <p style="margin-top:5px">URL: gist.github.com/USERNAME/<strong>GIST_ID</strong> → ID ቁረጥ → ከላይ ያስቀምጡ</p></div>
+
+        <div class="step"><div class="step-num">2</div><h3>GitHub PAT ፍጠር</h3>
+          <p>github.com → Settings → Developer settings → Tokens (classic) → Generate new token</p>
+          <p style="margin-top:5px">✅ <strong>gist</strong> scope ብቻ ምረጥ → Generate → ወዲያው ቁረጥ (አንድ ጊዜ ብቻ ይታያል)</p></div>
+
+        <div class="step"><div class="step-num">3</div><h3>ቪዲዮ Download URL</h3>
+          <p>GitHub Actions ቪዲዮ ፋይሎቹን browser ከ IndexedDB ማንበብ አይችልም።</p>
+          <p style="margin-top:5px">ቪዲዮ ፋይሎቹን <strong>Google Drive (share → anyone with link) ወይም Dropbox</strong> ላይ ስቀሉ → direct download link ቀምጡ → ቪዲዮ ሲጨምሩ "Download URL" field ያስቀምጡ</p></div>
+
+        <div class="step"><div class="step-num">4</div><h3>GitHub Repo + Secrets</h3>
+          <p>github.com → New private repo → <strong>yt-scheduler</strong> → yt-scheduler.yml ፋይሉን .github/workflows/ ውስጥ ያስቀምጡ</p>
+          <p style="margin-top:6px">Repo → Settings → Secrets → Actions:</p>
+          <div class="code">GIST_ID · MY_GITHUB_PAT · YT_CLIENT_ID · YT_CLIENT_SECRET · YT_REFRESH_TOKEN</div>
+          <p style="margin-top:5px;font-size:11px;color:var(--muted)">💡 YT_REFRESH_TOKEN: DevTools → Application → Local Storage → yt_refresh</p></div>
+
+        <div class="step"><div class="step-num">5</div><h3>ጀምር! ✅</h3>
+          <p>ቪዲዮ ጨምር → ቀን/ሰዓት ያዙ → GitHub Actions every 5 min ይፈትሻል → ሰዓቱ ሲደርስ YouTube ላይ ይለቃል — browser ዝግ ቢሆን!</p></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bottom-nav-btn active" id="bnav-queue" onclick="setNav(null,'queue');setBNav('queue')">
+    <span class="bnav-icon">📋</span>ዝርዝር
+  </button>
+  <button class="bottom-nav-btn" id="bnav-settings-page" onclick="setNav(null,'settings-page');setBNav('settings-page')">
+    <span class="bnav-icon">⚙️</span>Auto
+  </button>
+  <button class="bottom-nav-btn" id="bnav-add" onclick="openModal()">
+    <span class="bnav-icon" style="font-size:28px;color:var(--red)">＋</span>
+  </button>
+  <button class="bottom-nav-btn" id="bnav-setup" onclick="setNav(null,'setup');setBNav('setup')">
+    <span class="bnav-icon">🛠️</span>Setup
+  </button>
+</nav>
+
+<!-- ADD VIDEO MODAL -->
+<div id="add-modal" class="overlay">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">➕ ቪድዮ ጨምር</div>
+    <div class="fg"><label>ርዕስ *</label><input id="f-title" placeholder="የቪድዮ ርዕስ..." autocomplete="off"/></div>
+    <div class="fg"><label>መግለጫ</label><textarea id="f-desc" placeholder="ቪድዮ ስለምን ነው?"></textarea></div>
+    <div class="fg-row">
+      <div class="fg"><label>ቀን *</label><input type="date" id="f-date"/></div>
+      <div class="fg"><label>ሰዓት *</label><input type="time" id="f-time" value="09:00"/></div>
+    </div>
+    <div id="auto-fill-hint" style="background:#001a0d;border:1px solid #003a1a;border-radius:8px;padding:10px 12px;font-size:11px;color:var(--green);margin-bottom:10px;display:none">
+      🗓️ <strong>Auto-Schedule:</strong> ቀጣዩ ነፃ ሰዓት ተሞልቷል — <button onclick="clearAutoFill()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;text-decoration:underline">ቀይር</button>
+    </div>
+    <div class="fg-row">
+      <div class="fg"><label>Privacy</label>
+        <select id="f-privacy"><option value="public">🌍 Public</option><option value="unlisted">🔗 Unlisted</option><option value="private">🔒 Private</option></select>
+      </div>
+      <div class="fg"><label>Tags</label><input id="f-tags" placeholder="ቴክ, ምክር..." autocomplete="off"/></div>
+    </div>
+    <div class="fg"><label>Download URL (GitHub Actions ለ) <span style="color:var(--muted);font-weight:400">— Google Drive ወይም Dropbox direct link</span></label>
+      <input id="f-url" placeholder="https://drive.google.com/uc?export=download&id=..." autocomplete="off" style="font-size:12px"/>
+    </div>
+    <div class="file-zone" id="file-zone" onclick="document.getElementById('f-file').click()">
+      <div style="font-size:22px;margin-bottom:5px">🎬</div>
+      <div id="file-lbl">ቪድዮ ፋይል ጫን (MP4, MOV) — browser preview ለ</div>
+      <input id="f-file" type="file" accept="video/*" style="display:none" onchange="onFile(this)"/>
+    </div>
+    <div class="m-actions">
+      <button class="btn btn-dark" onclick="closeModal()">ሰርዝ</button>
+      <button class="btn btn-red" onclick="addVideo()">✅ ጨምር</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settings-modal" class="overlay">
+  <div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">⚙️ Auto-Schedule</div>
+    <div id="settings-content"></div>
+    <div class="m-actions" style="margin-top:16px">
+      <button class="btn btn-dark" onclick="closeSettings()">ዝጋ</button>
+      <button class="btn btn-red" onclick="saveSettings()">✅ አስቀምጥ</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHANNEL PICKER -->
+<div id="ch-overlay">
+  <div class="ch-modal">
+    <div class="modal-drag" style="display:block"></div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;margin-bottom:12px">📺 ቻናልህን ምረጥ</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px">ቪድዮ ወደ የትኛው ቻናል ይሂድ?</div>
+    <div id="ch-list"></div>
+  </div>
+</div>
+
+<!-- VIDEO PREVIEW -->
+<div id="prev-overlay">
+  <div style="width:100%;max-width:680px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:0 4px">
+      <div id="prev-title" style="font-family:'Bebas Neue',sans-serif;font-size:18px"></div>
+      <button onclick="closePrev()" style="background:var(--card2);border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:8px;font-size:16px;cursor:pointer">✕</button>
+    </div>
+    <video id="prev-video" controls style="width:100%;border-radius:12px;background:#000;max-height:65vh"></video>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const CLIENT_ID = "1076025204271-862uqj1grarj8ouane4mqo4eh7mkon54.apps.googleusercontent.com";
+const BACKEND   = "YOUR_VERCEL_URL"; // optional — not needed for GitHub Actions mode
+const SCOPES    = "https://www.googleapis.com/auth/youtube.upload https://www.googleapis.com/auth/youtube.readonly";
+const REDIRECT_URI = window.location.origin + window.location.pathname.replace(/\/$/, "") + "/";
+
+// ─── GITHUB GIST CONFIG ───────────────────────────────────
+// Setup: Settings ⚙️ → GitHub Sync tab ውስጥ ያስቀምጡ
+// GIST_ID   = github.com/gist/YOUR_USERNAME ላይ ያለው ID (URL ውስጥ)
+// PAT       = github.com/settings/tokens → "gist" scope ብቻ ምረጥ
+let GIST_ID  = localStorage.getItem("yt_gist_id")  || "";
+let GIST_PAT = localStorage.getItem("yt_gist_pat") || "";
+
+// ─── STATE ────────────────────────────────────────────────
+let accessToken  = localStorage.getItem("yt_access")  || null;
+let refreshToken = localStorage.getItem("yt_refresh") || null;
+let tokenExpiry  = Number(localStorage.getItem("yt_expiry")) || 0;
+let selectedChId = localStorage.getItem("yt_ch_id")   || null;
+let uploadingId  = null;
+let selectedFile = null;
+let videos       = JSON.parse(localStorage.getItem("yt_videos") || "[]");
+const fileStore  = {};
+
+// ─── AUTO-SCHEDULE SETTINGS ───────────────────────────────
+// Default: 5 ቪድዮ per day, post times: 07:00, 11:00, 14:00, 17:00, 20:00
+let schedSettings = JSON.parse(localStorage.getItem("yt_sched_settings") || JSON.stringify({
+  enabled: true,
+  dailyLimit: 5,
+  postTimes: ["07:00","11:00","14:00","17:00","20:00"],
+  defaultPrivacy: "public"
+}));
+
+function saveSchedSettings(){localStorage.setItem("yt_sched_settings", JSON.stringify(schedSettings));}
+
+// ─── DAILY COUNT ──────────────────────────────────────────
+function getTodayKey(){return new Date().toISOString().split("T")[0];}
+function getTodayPosted(){
+  const key = "yt_posted_" + getTodayKey();
+  return Number(localStorage.getItem(key) || 0);
+}
+function incTodayPosted(){
+  const key = "yt_posted_" + getTodayKey();
+  localStorage.setItem(key, getTodayPosted() + 1);
+}
+
+// ─── NEXT AVAILABLE SLOT ──────────────────────────────────
+function getNextAvailableSlot(){
+  const limit = schedSettings.dailyLimit;
+  const times = schedSettings.postTimes.slice(0, limit);
+  const now   = new Date();
+
+  // Find used slots per day (from scheduled/scheduled_yt videos)
+  const usedSlots = {}; // "YYYY-MM-DD_HH:mm" -> true
+  videos.forEach(v => {
+    if(v.status !== "queued") usedSlots[v.date + "_" + v.time] = true;
+  });
+
+  // Scan next 30 days
+  for(let d = 0; d < 30; d++){
+    const day = new Date(now);
+    day.setDate(day.getDate() + d);
+    const dayStr = day.toISOString().split("T")[0];
+
+    // Count posted today
+    const postedToday = videos.filter(v =>
+      v.date === dayStr && (v.status === "posted" || v.status === "scheduled_yt" || v.status === "uploading")
+    ).length + (d === 0 ? getTodayPosted() : 0);
+
+    if(postedToday >= limit) continue;
+
+    for(const t of times){
+      const slotDT = new Date(dayStr + "T" + t + ":00");
+      if(d === 0 && slotDT <= now) continue; // past today
+      const key = dayStr + "_" + t;
+      if(!usedSlots[key]){
+        return { date: dayStr, time: t, dt: slotDT };
+      }
+    }
+  }
+  return null;
+}
+
+// Fill all unscheduled videos into available slots
+function autoScheduleAll(){
+  const unscheduled = videos.filter(v => v.status === "queued");
+  if(!unscheduled.length){ showToast("⚠️ Schedule ያልተያዘ ቪድዮ የለም"); return; }
+  let count = 0;
+  for(const v of unscheduled){
+    const slot = getNextAvailableSlot();
+    if(!slot) break;
+    v.date   = slot.date;
+    v.time   = slot.time;
+    v.status = "scheduled";
+    count++;
+  }
+  saveVideos(); renderQueue();
+  showToast(`🗓️ ${count} ቪድዮ auto-scheduled ሆኗል!`);
+}
+
+// ─── SETTINGS UI ──────────────────────────────────────────
+function buildSettingsHTML(targetId){
+  const lim  = schedSettings.dailyLimit;
+  const pts  = schedSettings.postTimes;
+  // Ensure we have enough time slots for max limit (5)
+  while(pts.length < 5) pts.push("20:00");
+  const html = `
+    <div class="setting-row">
+      <div><div class="setting-label">Auto-Schedule ቀጥ</div>
+        <div class="setting-sub">ቪድዮ ጨምሬ ቀጠሮ ሲደርስ ይለቃል</div>
+      </div>
+      <div class="toggle ${schedSettings.enabled?"on":""}" id="toggle-enabled" onclick="toggleEnabled()"></div>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">በቀን ቪድዮ ቁጥር</div>
+        <div class="setting-sub">ምንኛ ቪድዮ ይለቀቅ?</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <div class="limit-pill ${lim===3?"active":""}" onclick="setDailyLimitSettings(3)" id="spill-3">3</div>
+        <div class="limit-pill ${lim===5?"active":""}" onclick="setDailyLimitSettings(5)" id="spill-5">5</div>
+      </div>
+    </div>
+    <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+      <div><div class="setting-label">ቀጠሮ ሰዓቶች</div>
+        <div class="setting-sub">ቪድዮ የሚለቀቅ ሰዓቶች (ምረጥ ${lim})</div>
+      </div>
+      <div class="time-slots-grid" id="time-slots-grid">
+        ${Array.from({length:lim},(_, i)=>`
+          <div>
+            <label style="font-size:9px;color:var(--muted);display:block;margin-bottom:3px">${i+1}ኛ ሰዓት</label>
+            <input type="time" class="time-slot-inp" id="tslot-${i}" value="${pts[i]||"09:00"}"/>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+    <div class="setting-row">
+      <div><div class="setting-label">Default Privacy</div></div>
+      <select id="s-privacy" style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none">
+        <option value="public" ${schedSettings.defaultPrivacy==="public"?"selected":""}>🌍 Public</option>
+        <option value="unlisted" ${schedSettings.defaultPrivacy==="unlisted"?"selected":""}>🔗 Unlisted</option>
+        <option value="private" ${schedSettings.defaultPrivacy==="private"?"selected":""}>🔒 Private</option>
+      </select>
+    </div>
+  `;
+  document.getElementById(targetId).innerHTML = html;
+}
+
+function toggleEnabled(){
+  schedSettings.enabled = !schedSettings.enabled;
+  document.getElementById("toggle-enabled").classList.toggle("on", schedSettings.enabled);
+}
+
+function setDailyLimitSettings(n){
+  schedSettings.dailyLimit = n;
+  document.querySelectorAll("[id^='spill-']").forEach(el => el.classList.remove("active"));
+  document.getElementById("spill-"+n)?.classList.add("active");
+  // Rebuild slots
+  const grid = document.getElementById("time-slots-grid");
+  if(!grid) return;
+  while(schedSettings.postTimes.length < 5) schedSettings.postTimes.push("20:00");
+  grid.innerHTML = Array.from({length:n},(_, i)=>`
+    <div>
+      <label style="font-size:9px;color:var(--muted);display:block;margin-bottom:3px">${i+1}ኛ ሰዓት</label>
+      <input type="time" class="time-slot-inp" id="tslot-${i}" value="${schedSettings.postTimes[i]||"09:00"}"/>
+    </div>
+  `).join("");
+}
+
+function saveSettings(){
+  // Read times
+  const lim = schedSettings.dailyLimit;
+  const times = [];
+  for(let i=0;i<lim;i++){
+    const el = document.getElementById("tslot-"+i);
+    if(el) times.push(el.value || "09:00");
+  }
+  times.sort();
+  schedSettings.postTimes = times;
+  const pEl = document.getElementById("s-privacy");
+  if(pEl) schedSettings.defaultPrivacy = pEl.value;
+  saveSchedSettings();
+  closeSettings();
+  updateDailyBanner();
+  showToast("✅ ቅንብር ተቀምጧል!");
+}
+
+function openSettings(){
+  buildSettingsHTML("settings-content");
+  document.getElementById("settings-modal").classList.add("open");
+}
+function closeSettings(){
+  document.getElementById("settings-modal").classList.remove("open");
+}
+
+// ─── DAILY BANNER ─────────────────────────────────────────
+function updateDailyBanner(){
+  const lim   = schedSettings.dailyLimit;
+  const today = getTodayPosted() + videos.filter(v =>
+    v.date === getTodayKey() && (v.status==="posted"||v.status==="scheduled_yt"||v.status==="uploading")
+  ).length;
+
+  document.getElementById("today-count").textContent = today;
+  document.getElementById("daily-limit-display").textContent = lim;
+
+  // Pills
+  [3,5].forEach(n => {
+    document.getElementById("pill-"+n)?.classList.toggle("active", lim === n);
+  });
+
+  // Next slot
+  const next = getNextAvailableSlot();
+  const nextEl = document.getElementById("next-slot-time");
+  if(next){
+    const isToday = next.date === getTodayKey();
+    nextEl.textContent = (isToday ? "" : next.date.slice(5) + " ") + next.time;
+    nextEl.style.color = "var(--blue)";
+  } else {
+    nextEl.textContent = "ሞላ";
+    nextEl.style.color = "var(--muted)";
+  }
+
+  // Slots row
+  renderSlotsRow();
+}
+
+function renderSlotsRow(){
+  const row = document.getElementById("slots-row");
+  const lim = schedSettings.dailyLimit;
+  const times = schedSettings.postTimes.slice(0, lim);
+  const todayKey = getTodayKey();
+
+  const usedTimes = new Set(
+    videos
+      .filter(v => v.date === todayKey && v.status !== "queued")
+      .map(v => v.time)
+  );
+
+  row.innerHTML = times.map(t => {
+    const filled = usedTimes.has(t);
+    return `<div class="slot-chip ${filled?"filled":"open"}">
+      ${filled?"🔴":"🟢"} ${t}
+    </div>`;
+  }).join("");
+}
+
+function setDailyLimit(n){
+  schedSettings.dailyLimit = n;
+  // Adjust post times if needed
+  while(schedSettings.postTimes.length < n){
+    const last = schedSettings.postTimes[schedSettings.postTimes.length-1] || "09:00";
+    const [h,m] = last.split(":").map(Number);
+    const newH = Math.min(h+3, 23);
+    schedSettings.postTimes.push(String(newH).padStart(2,"0")+":"+String(m).padStart(2,"0"));
+  }
+  saveSchedSettings();
+  updateDailyBanner();
+  showToast(`✅ ${n} ቪድዮ በቀን ቀጥሏል`);
+}
+
+// ─── PKCE ─────────────────────────────────────────────────
+function rndStr(len){
+  const arr=new Uint8Array(len);crypto.getRandomValues(arr);
+  return btoa(String.fromCharCode(...arr)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"");
+}
+async function sha256b64(str){
+  const enc=new TextEncoder().encode(str);
+  const buf=await crypto.subtle.digest("SHA-256",enc);
+  return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=/g,"");
+}
+
+// ─── AUTH ─────────────────────────────────────────────────
+//
+// ✅ HOW SESSION PERSISTENCE WORKS:
+//
+//   refresh_token → localStorage (ቋሚ ይቀመጣል — reload/app close ኋላ ይቀጥላል)
+//   access_token  → localStorage (1 ሰዓት ብቻ valid)
+//   token_expiry  → localStorage (ሰዓት ቆጣሪ)
+//
+//   App ሲጀምር:
+//     1. access_token valid ቢሆን → ቀጥታ ይጠቀም
+//     2. access_token ካረጀ + refresh_token ካለ → /api/auth?action=refresh → አዲስ access_token
+//     3. ሁሉም ካልሰራ → "ዳግም ያገናኝ" banner አሳይ (ያረጀ refresh_token ወይም ምንም session ከሌለ)
+//
+//   ➡ Backend (Vercel) = required for refresh. index.html 홀ቸው refresh አይችልም
+//     ምክንያቱም Google OAuth refresh = client_secret ያስፈልጋል (client-side ላይ አይቀመጥም)
+
+async function handleAuth(){
+  if(isLoggedIn()){showToast("✅ ተገናኝቷል!");return;}
+  localStorage.setItem("yt_was_logged_in","1");
+  // Token flow (implicit) — backend አያስፈልግም
+  const url="https://accounts.google.com/o/oauth2/v2/auth?"+new URLSearchParams({
+    client_id:CLIENT_ID,
+    redirect_uri:REDIRECT_URI,
+    response_type:"token",
+    scope:SCOPES,
+    prompt:"consent select_account",
+  });
+  window.location.href=url;
+}
+
+function isLoggedIn(){
+  // 2 ደቂቃ buffer — expire ሊደርስ ሲቃረብ ቅድሚያ ያድሳል
+  return !!(accessToken && Date.now() < tokenExpiry - 120000);
+}
+
+// Debounce refresh — concurrent calls ብቻ አንድ request ያደርጋሉ
+let _refreshing=false, _refreshQ=[];
+async function getValidToken(){
+  if(isLoggedIn()) return accessToken;
+  if(_refreshing) return new Promise(r=>_refreshQ.push(r));
+  _refreshing=true;
+  let tk=null;
+  try{ tk=await _doRefresh(); }
+  finally{
+    _refreshing=false;
+    _refreshQ.forEach(r=>r(tk)); _refreshQ=[];
+  }
+  return tk;
+}
+
+async function _doRefresh(){
+  // ── Step 1: Vercel backend refresh ──────────────────────
+  if(refreshToken && BACKEND && BACKEND!=="YOUR_VERCEL_URL"){
+    try{
+      const r=await fetch(BACKEND+"/api/auth",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({action:"refresh", refresh_token:refreshToken}),
+        signal:AbortSignal.timeout(10000)
+      });
+      const d=await r.json();
+      if(r.ok && d.access_token){
+        _storeTokens(d.access_token, d.refresh_token||refreshToken, d.expires_in||3599);
+        console.log("✅ Token refreshed via backend");
+        return accessToken;
+      }
+      // 400/401 → refresh_token ፈቃዱ ተሰርዟል → user ዳግም ይግቡ
+      if(r.status===400||r.status===401){
+        console.warn("Refresh token revoked — clearing session");
+        _clearTokens();
+        _showReconnectBanner();
+        return null;
+      }
+    }catch(e){
+      console.warn("Backend refresh error:",e.message);
+      // Network error — backend down ሊሆን ይችላል፣ existing token ለማዳን ሞክር
+    }
+  }
+
+  // ── Step 2: Token alive check (Google tokeninfo) ─────────
+  // access_token ሙሉ expire አላለ ምናልባት — verify
+  if(accessToken){
+    try{
+      const r=await fetch(
+        `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`,
+        {signal:AbortSignal.timeout(5000)}
+      );
+      const d=await r.json();
+      if(!d.error && d.expires_in && Number(d.expires_in)>120){
+        // Token valid ነው — expiry አሻሻል
+        tokenExpiry=Date.now()+Number(d.expires_in)*1000;
+        localStorage.setItem("yt_expiry",tokenExpiry);
+        console.log("✅ Token still valid for",d.expires_in,"s");
+        return accessToken;
+      }
+    }catch(e){console.warn("Tokeninfo check failed:",e.message);}
+  }
+
+  // ── Step 3: No refresh_token, no valid token → reconnect ─
+  if(!refreshToken){
+    _showReconnectBanner();
+    return null;
+  }
+
+  // Backend ያልተቀናበረ — GitHub Actions mode, no banner needed
+  return null;
+}
+
+function _storeTokens(at, rt, expiresIn){
+  accessToken  = at;
+  refreshToken = rt || refreshToken;
+  // expires_in = seconds → ms ቀይር
+  tokenExpiry  = Date.now() + (Number(expiresIn)||3599)*1000;
+  localStorage.setItem("yt_access",  accessToken);
+  localStorage.setItem("yt_expiry",  String(tokenExpiry));
+  if(rt) localStorage.setItem("yt_refresh", rt);
+  document.getElementById("reconnect-banner").style.display="none";
+}
+
+function _clearTokens(){
+  accessToken=null; tokenExpiry=0;
+  localStorage.removeItem("yt_access");
+  localStorage.removeItem("yt_expiry");
+  // refresh_token አይጥሉ — banner ላይ "ዳግም ያገናኝ" ቁልፍ ለ UX
+}
+
+function _showReconnectBanner(){
+  // Only show reconnect banner if we actually had a session before
+  // AND we have a refresh token (meaning backend was configured)
+  if(localStorage.getItem("yt_was_logged_in") && refreshToken){
+    document.getElementById("reconnect-banner").style.display="";
+  }
+}
+
+// App load / redirect ሲመጣ token ያቀበላል (implicit flow)
+async function handleCode(){
+  // Implicit flow: token ከ URL hash ውስጥ ይመጣል (#access_token=...&expires_in=...)
+  const hash=new URLSearchParams(window.location.hash.slice(1));
+  const params=new URLSearchParams(window.location.search);
+
+  const error=hash.get("error")||params.get("error");
+  if(error){
+    console.warn("OAuth error:",error);
+    history.replaceState(null,"",window.location.pathname);
+    showToast("❌ Login ስህተት: "+error);
+    return;
+  }
+
+  const accessTk=hash.get("access_token");
+  const expiresIn=hash.get("expires_in");
+
+  if(accessTk){
+    history.replaceState(null,"",window.location.pathname);
+    _storeTokens(accessTk, null, expiresIn||3599);
+    localStorage.setItem("yt_was_logged_in","1");
+    localStorage.removeItem("yt_ch_id");
+    localStorage.removeItem("yt_ch_name");
+    localStorage.removeItem("yt_user");
+    selectedChId=null;
+    showToast("✅ YouTube ጋር ተገናኝቷል! ቻናልህን ምረጥ።");
+    updateUI();
+    fetchChannels();
+    return;
+  }
+
+  // Legacy code flow (ignore)
+  const code=params.get("code");
+  if(code) history.replaceState(null,"",window.location.pathname);
+}
+
+function handleLogout(){
+  accessToken=refreshToken=null; tokenExpiry=0; selectedChId=null;
+  ["yt_access","yt_refresh","yt_expiry","yt_ch_id","yt_ch_name","yt_user","yt_was_logged_in","pkce_verifier"]
+    .forEach(k=>localStorage.removeItem(k));
+  updateUI(); showToast("🚪 ተወጣ!");
+}
+
+// ── Auto token refresh scheduler ──────────────────────────
+// Token expire ሊደርስ 5 ደቂቃ ሲቀር ቅድሚያ ያድሳል
+function scheduleRefresh(){
+  const remaining=tokenExpiry-Date.now()-5*60*1000;
+  const delay=Math.max(remaining, 30000); // ቢያንስ 30 ሰኬንድ
+  setTimeout(async()=>{
+    if(refreshToken){
+      console.log("🔄 Proactive token refresh...");
+      await getValidToken();
+    }
+    scheduleRefresh(); // ቀጣዩ cycle
+  }, delay);
+}
+
+// ─── CHANNELS ─────────────────────────────────────────────
+async function fetchChannels(){
+  const tk=await getValidToken(); if(!tk) return;
+  try{
+    const r=await fetch("https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&mine=true",
+      {headers:{Authorization:"Bearer "+tk}});
+    const d=await r.json(); const chs=d.items||[];
+    if(chs.length===1) selectCh(chs[0].id,chs[0].snippet.title,chs[0].snippet.thumbnails?.default?.url);
+    else if(chs.length>1) showChPicker(chs);
+  }catch(e){console.error(e);}
+}
+
+function showChPicker(chs){
+  const list=document.getElementById("ch-list");
+  list.innerHTML=chs.map(c=>{
+    const subs=Number(c.statistics?.subscriberCount||0).toLocaleString();
+    const img=c.snippet.thumbnails?.default?.url||"";
+    return `<div class="ch-card" onclick="selectCh('${c.id}','${escH(c.snippet.title)}','${img}')">
+      <img src="${img}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--border);" onerror="this.style.display='none'"/>
+      <div><div style="font-weight:700;font-size:13px">${escH(c.snippet.title)}</div>
+      <div style="font-size:10px;color:var(--muted)">👥 ${subs}</div></div>
+      <div style="margin-left:auto">→</div>
+    </div>`;
+  }).join("");
+  document.getElementById("ch-overlay").classList.add("open");
+}
+
+function selectCh(id,name,photo){
+  selectedChId=id; localStorage.setItem("yt_ch_id",id); localStorage.setItem("yt_ch_name",name);
+  if(photo) localStorage.setItem("yt_ch_photo",photo);
+  document.getElementById("ch-overlay").classList.remove("open");
+  showToast("✅ ቻናል: "+name); updateUI();
+}
+
+// ─── USER ─────────────────────────────────────────────────
+async function fetchUser(){
+  const tk=await getValidToken(); if(!tk) return;
+  try{
+    const cached=localStorage.getItem("yt_user");
+    const user=cached?JSON.parse(cached):await(await fetch(
+      "https://www.googleapis.com/oauth2/v3/userinfo",{headers:{Authorization:"Bearer "+tk}})).json();
+    if(!cached) localStorage.setItem("yt_user",JSON.stringify(user));
+    document.getElementById("user-name").textContent=user.name||"";
+    const chName=localStorage.getItem("yt_ch_name")||"";
+    document.getElementById("sel-ch").textContent=chName?"📺 "+chName:"";
+    const photo=document.getElementById("user-photo");
+    if(user.picture) photo.src=user.picture;
+    document.getElementById("user-info").style.display="flex";
+  }catch(e){}
+}
+
+// ─── UI ───────────────────────────────────────────────────
+function updateUI(){
+  const loggedIn=isLoggedIn()||!!refreshToken;
+  document.getElementById("auth-btn").style.display    = loggedIn?"none":"";
+  document.getElementById("ch-btn").style.display      = loggedIn?"":"none";
+  document.getElementById("logout-btn").style.display  = loggedIn?"":"none";
+  const notice = document.getElementById("auth-notice");
+  if(notice) notice.style.display = loggedIn?"none":"";
+  document.getElementById("reconnect-banner").style.display="none"; // handled by _showReconnectBanner
+  if(loggedIn) fetchUser();
+}
+
+function setNav(el,view){
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+  if(el) el.classList.add("active");
+  ["queue","settings-page","setup"].forEach(v=>{
+    const el=document.getElementById("view-"+v);
+    if(el) el.style.display=(v===view)?"":"none";
+  });
+  if(view==="settings-page"){
+    buildSettingsHTML("settings-content-page");
+    // Add save button inline
+    const cont = document.getElementById("settings-content-page");
+    const saveDiv = document.createElement("div");
+    saveDiv.style.cssText="display:flex;gap:8px;justify-content:flex-end;margin-top:16px";
+    saveDiv.innerHTML=`<button class="btn btn-red" onclick="saveSettingsPage()">✅ አስቀምጥ</button>`;
+    cont.appendChild(saveDiv);
+  }
+}
+
+function saveSettingsPage(){
+  saveSettings();
+  showToast("✅ ቅንብር ተቀምጧል!");
+}
+
+function setBNav(view){
+  document.querySelectorAll(".bottom-nav-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("bnav-"+view)?.classList.add("active");
+}
+
+// ─── INDEXEDDB ────────────────────────────────────────────
+let db;
+function openDB(){
+  return new Promise((res,rej)=>{
+    if(db) return res(db);
+    const req=indexedDB.open("YTSchedulerDB",1);
+    req.onupgradeneeded=e=>e.target.result.createObjectStore("files");
+    req.onsuccess=e=>{db=e.target.result;res(db)};
+    req.onerror=()=>rej("DB error");
+  });
+}
+async function saveFile(id,file){const d=await openDB();return new Promise((res,rej)=>{const tx=d.transaction("files","readwrite");tx.objectStore("files").put(file,id);tx.oncomplete=res;tx.onerror=rej});}
+async function getFile(id){const d=await openDB();return new Promise((res,rej)=>{const req=d.transaction("files").objectStore("files").get(id);req.onsuccess=()=>res(req.result||null);req.onerror=rej});}
+async function delFile(id){const d=await openDB();return new Promise(res=>{const tx=d.transaction("files","readwrite");tx.objectStore("files").delete(id);tx.oncomplete=res});}
+
+// ─── VIDEO MANAGEMENT ─────────────────────────────────────
+function onFile(input){
+  if(input.files[0]){
+    selectedFile=input.files[0];
+    document.getElementById("file-lbl").textContent="✅ "+selectedFile.name;
+    document.getElementById("file-zone").classList.add("has-file");
+  }
+}
+
+function editVideo(id){
+  const v = videos.find(v=>v.id===id);
+  if(!v) return;
+  // Store edit id
+  window._editId = id;
+  // Open modal and pre-fill
+  openModal();
+  setTimeout(()=>{
+    document.getElementById("f-title").value = v.title||"";
+    document.getElementById("f-desc").value  = v.desc||"";
+    document.getElementById("f-tags").value  = v.tags||"";
+    document.getElementById("f-url").value   = v.downloadUrl||"";
+    document.getElementById("f-date").value  = v.date||"";
+    document.getElementById("f-time").value  = v.time||"";
+    const priv = document.getElementById("f-privacy");
+    if(priv) priv.value = v.privacy||"public";
+    // Change button text
+    const btn = document.querySelector("#modal .btn-red");
+    if(btn){ btn.textContent="✅ አስተካክል"; btn.onclick=saveEditVideo; }
+    document.querySelector("#modal h2") && (document.querySelector("#modal h2").textContent="✏️ ቪዲዮ አስተካክል");
+  }, 50);
+}
+
+function saveEditVideo(){
+  const id = window._editId;
+  const v = videos.find(v=>v.id===id);
+  if(!v){ closeModal(); return; }
+  const title = document.getElementById("f-title").value.trim();
+  if(!title){ showToast("⚠️ ርዕስ ያስፈልጋል"); return; }
+  v.title      = title;
+  v.desc       = document.getElementById("f-desc").value;
+  v.tags       = document.getElementById("f-tags").value;
+  v.downloadUrl= document.getElementById("f-url").value.trim()||null;
+  v.date       = document.getElementById("f-date").value;
+  v.time       = document.getElementById("f-time").value;
+  v.privacy    = document.getElementById("f-privacy").value||"public";
+  const dt = new Date(v.date+"T"+v.time+":00");
+  v.status     = dt > new Date() ? "scheduled" : v.status;
+  window._editId = null;
+  saveVideos(); renderQueue(); closeModal();
+  showToast("✅ ቪዲዮ ተስተካክሏል!");
+}
+
+function openModal(){
+  document.getElementById("add-modal").classList.add("open");
+  // Auto-fill next available slot
+  if(schedSettings.enabled){
+    const slot=getNextAvailableSlot();
+    if(slot){
+      document.getElementById("f-date").value=slot.date;
+      document.getElementById("f-time").value=slot.time;
+      document.getElementById("auto-fill-hint").style.display="";
+    } else {
+      document.getElementById("f-date").value=new Date().toISOString().split("T")[0];
+      document.getElementById("f-time").value="09:00";
+      document.getElementById("auto-fill-hint").style.display="none";
+    }
+  } else {
+    document.getElementById("f-date").value=new Date().toISOString().split("T")[0];
+    document.getElementById("auto-fill-hint").style.display="none";
+  }
+}
+
+function clearAutoFill(){
+  document.getElementById("auto-fill-hint").style.display="none";
+}
+
+function closeModal(){
+  window._editId=null;
+  // Reset modal button
+  const btn=document.querySelector("#modal .btn-red");
+  if(btn){ btn.textContent="✅ ጨምር"; btn.onclick=addVideo; }
+  const h2=document.querySelector("#modal h2");
+  if(h2) h2.textContent="+ ቪዲዮ ጨምር";
+  document.getElementById("add-modal").classList.remove("open");
+  ["f-title","f-desc","f-tags","f-url"].forEach(id=>{const el=document.getElementById(id);if(el)el.value="";});
+  document.getElementById("file-lbl").textContent="ቪድዮ ፋይል ጫን (MP4, MOV)";
+  document.getElementById("file-zone").classList.remove("has-file");
+  document.getElementById("auto-fill-hint").style.display="none";
+  selectedFile=null;
+}
+
+async function addVideo(){
+  const title=document.getElementById("f-title").value.trim();
+  const date =document.getElementById("f-date").value;
+  if(!title||!date){showToast("⚠️ ርዕስ እና ቀን ያስፈልጋል!");return;}
+  const emojis=["🎬","📹","🎥","💡","🌍","🍽️","🏙️","🎵","📚","⚽","✈️","🎭"];
+  const timeVal=document.getElementById("f-time").value||"09:00";
+  const schedDT=new Date(date+"T"+timeVal+":00");
+  const v={
+    id:Date.now(),title,
+    desc:document.getElementById("f-desc").value,
+    date, time:timeVal,
+    privacy:document.getElementById("f-privacy").value||schedSettings.defaultPrivacy,
+    tags:document.getElementById("f-tags").value,
+    status:schedDT>new Date()?"scheduled":"queued",
+    emoji:emojis[Math.floor(Math.random()*emojis.length)],
+    fileName:selectedFile?selectedFile.name:null,
+    downloadUrl:(document.getElementById("f-url").value.trim()||null),
+  };
+  videos.push(v);
+  if(selectedFile){fileStore[v.id]=selectedFile;saveFile(v.id,selectedFile);}
+  saveVideos(); renderQueue(); closeModal();
+  updateDailyBanner();
+  showToast("✅ ቪድዮ ተጨምሯል! "+date+" "+timeVal+" ላይ ይለቃል");
+}
+
+function deleteVideo(id){
+  videos=videos.filter(v=>v.id!==id);
+  delete fileStore[id]; delFile(id); saveVideos(); renderQueue(); updateDailyBanner();
+  showToast("🗑️ ቪድዮ ተሰርዟል");
+}
+
+function saveVideos(){
+  localStorage.setItem("yt_videos",JSON.stringify(videos));
+  syncToGist();
+}
+
+// ─── GITHUB GIST SYNC ─────────────────────────────────────
+async function syncToGist(){
+  if(!GIST_ID||!GIST_PAT) return;
+  try{
+    const payload=videos.map(v=>({
+      id:v.id,title:v.title,desc:v.desc||"",date:v.date,time:v.time,
+      privacy:v.privacy||"public",tags:v.tags||"",status:v.status,
+      youtubeId:v.youtubeId||null,downloadUrl:v.downloadUrl||null,errorMsg:v.errorMsg||null
+    }));
+    const r=await fetch(`https://api.github.com/gists/${GIST_ID}`,{
+      method:"PATCH",
+      headers:{"Authorization":"token "+GIST_PAT,"Content-Type":"application/json","Accept":"application/vnd.github.v3+json"},
+      body:JSON.stringify({files:{"yt-schedule.json":{content:JSON.stringify(payload,null,2)}}})
+    });
+    const dot=document.getElementById("gist-sync-dot");
+    const tim=document.getElementById("gist-sync-time");
+    const hdrDot2=document.getElementById("gist-sync-dot-hdr");
+    if(r.ok){
+      if(dot) dot.style.background="var(--green)";
+      if(hdrDot2) hdrDot2.style.background="var(--green)";
+      if(tim) tim.textContent=new Date().toLocaleTimeString("am-ET",{hour:"2-digit",minute:"2-digit"})+" sync";
+    } else {
+      if(dot) dot.style.background="var(--yellow)";
+      if(hdrDot2) hdrDot2.style.background="var(--yellow)";
+    }
+  }catch(e){console.warn("Gist sync:",e.message);}
+}
+
+async function pullFromGist(){
+  if(!GIST_ID||!GIST_PAT){showToast("⚠️ Gist ID ወይም PAT አልተቀናበረም");return;}
+  try{
+    showToast("⏳ Gist ከ sync እየጣለ...");
+    const r=await fetch(`https://api.github.com/gists/${GIST_ID}`,{
+      headers:{"Authorization":"token "+GIST_PAT,"Accept":"application/vnd.github.v3+json"}
+    });
+    if(!r.ok) throw new Error("Gist fetch failed: "+r.status);
+    const data=await r.json();
+    const file=data.files?.["yt-schedule.json"];
+    if(!file) throw new Error("yt-schedule.json Gist ውስጥ አልተገኘም");
+    const remote=JSON.parse(file.content);
+    let updated=0;
+    for(const rv of remote){
+      const local=videos.find(v=>v.id===rv.id);
+      if(local&&local.status!==rv.status){
+        local.status=rv.status; local.youtubeId=rv.youtubeId||local.youtubeId;
+        local.errorMsg=rv.errorMsg||null; updated++;
+      }
+    }
+    localStorage.setItem("yt_videos",JSON.stringify(videos));
+    renderQueue(); updateDailyBanner();
+    showToast(updated>0?`✅ ${updated} ቪድዮ status ታደሰ!`:"✅ ምንም ለውጥ የለም");
+  }catch(e){showToast("❌ "+e.message);}
+}
+
+function saveGistConfig(){
+  const id=document.getElementById("cfg-gist-id").value.trim();
+  const pat=document.getElementById("cfg-gist-pat").value.trim();
+  if(!id||!pat){showToast("⚠️ Gist ID እና PAT ሁሉንም ይሙሉ");return;}
+  GIST_ID=id; localStorage.setItem("yt_gist_id",id);
+  GIST_PAT=pat; localStorage.setItem("yt_gist_pat",pat);
+  showToast("✅ GitHub Sync ቅንብር ተቀምጧል!"); updateGistUI(); syncToGist();
+}
+
+function updateGistUI(){
+  const configured=!!(GIST_ID&&GIST_PAT);
+  const dot=document.getElementById("gist-sync-dot");
+  const hdrDot=document.getElementById("gist-sync-dot-hdr");
+  const lbl=document.getElementById("gist-status-lbl");
+  const color=configured?"var(--green)":"#555";
+  if(dot) dot.style.background=color;
+  if(hdrDot) hdrDot.style.background=color;
+  if(lbl) lbl.textContent=configured?"✅ ቀናበረ":"⚠️ አልተቀናበረም";
+  const idEl=document.getElementById("cfg-gist-id");
+  const patEl=document.getElementById("cfg-gist-pat");
+  if(idEl&&GIST_ID) idEl.value=GIST_ID;
+  if(patEl&&GIST_PAT) patEl.value=GIST_PAT;
+}
+
+function showRefreshToken(){
+  const rt=localStorage.getItem("yt_refresh");
+  const disp=document.getElementById("rt-display");
+  const noLogin=document.getElementById("rt-no-login");
+  const val=document.getElementById("rt-value");
+  if(rt){
+    val.textContent=rt;
+    disp.style.display="";
+    noLogin.style.display="none";
+  } else {
+    disp.style.display="none";
+    noLogin.style.display="";
+  }
+}
+
+function copyRT(){
+  const rt=document.getElementById("rt-value").textContent;
+  navigator.clipboard.writeText(rt).then(()=>showToast("✅ Refresh Token copied!")).catch(()=>{
+    // fallback
+    const el=document.createElement("textarea");
+    el.value=rt; document.body.appendChild(el); el.select();
+    document.execCommand("copy"); document.body.removeChild(el);
+    showToast("✅ Copied!");
+  });
+}
+
+// ─── PREVIEW ──────────────────────────────────────────────
+async function previewVideo(id){
+  const file=fileStore[id]||await getFile(id);
+  if(!file){showToast("⚠️ ፋይሉ አልተገኘም");return;}
+  const url=URL.createObjectURL(file);
+  const v=videos.find(x=>x.id===id);
+  document.getElementById("prev-title").textContent=v?v.title:"ቪድዮ";
+  const vid=document.getElementById("prev-video");
+  vid.src=url;
+  document.getElementById("prev-overlay").classList.add("open");
+  vid.play();
+}
+function closePrev(){
+  const vid=document.getElementById("prev-video");
+  vid.pause(); URL.revokeObjectURL(vid.src); vid.src="";
+  document.getElementById("prev-overlay").classList.remove("open");
+}
+
+// ─── UPLOAD ───────────────────────────────────────────────
+async function uploadVideo(id){
+  if(uploadingId){showToast("⚠️ ሌላ ቪድዮ እየተላከ ነው");return;}
+  const v=videos.find(x=>x.id===id); if(!v) return;
+  const tk=await getValidToken();
+  if(!tk){
+    showToast("⚠️ Session ያረጀ — ዳግም ያገናኝ!");
+    document.getElementById("reconnect-banner").style.display=""; return;
+  }
+  const file=fileStore[id]||await getFile(id);
+  if(!file){showToast("⚠️ ፋይሉ አልተገኘም — ሰርዘህ እንደገና ጨምር!");return;}
+
+  uploadingId=id; v.status="uploading"; v.progress=0; v.copyright=null;
+  saveVideos(); renderQueue();
+  showToast("⬆️ YouTube ወደ እየተላከ ነው...");
+  if("Notification" in window && Notification.permission==="default") Notification.requestPermission();
+
+  const schedDT=new Date(v.date+"T"+v.time+":00");
+  const isFuture=schedDT>new Date();
+  const fileType=file.type||"video/mp4";
+  const metadata={
+    snippet:{title:v.title,description:v.desc||"",
+      tags:v.tags?v.tags.split(",").map(t=>t.trim()).filter(Boolean):[],categoryId:"22"},
+    status:isFuture?{privacyStatus:"private",publishAt:schedDT.toISOString()}:{privacyStatus:v.privacy}
+  };
+
+  try{
+    const initRes=await fetch(
+      "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+      {method:"POST",headers:{
+        "Authorization":"Bearer "+tk,"Content-Type":"application/json","X-Upload-Content-Type":fileType,
+      },body:JSON.stringify(metadata)});
+    if(!initRes.ok){
+      const e=await initRes.text();
+      let msg="Init ስህተት "+initRes.status;
+      if(initRes.status===401) msg="Token ያረጀ — ዳግም ያገናኝ";
+      if(initRes.status===403) msg="ፈቃድ የለም — ቻናሉን ፈትሽ";
+      if(e.includes("uploadLimitExceeded")) msg="ዛሬ Limit ደርሷል — ነገ ሞክር";
+      throw new Error(msg);
+    }
+    const uploadUri=initRes.headers.get("Location");
+    if(!uploadUri) throw new Error("Upload URI አልተገኘም");
+    const result=await xhrUpload(uploadUri,file,id,fileType);
+    showToast("🔍 Copyright እየፈተሸ ነው...");
+    const cp=await checkCopyright(result.id,tk);
+    v.youtubeId=result.id; v.progress=100;
+    if(cp&&cp.flagged){
+      v.status="copyright"; v.copyright=cp;
+      showToast("⚠️ Copyright ምልክት ተገኘ!");
+      notify("⚠️ Copyright",v.title+" — Copyright ተገኘ");
+    } else if(isFuture){
+      v.status="scheduled_yt";
+      delete fileStore[id]; delFile(id);
+      showToast("✅ Upload ተጠናቀቀ! "+v.date+" "+v.time+" ሰዓቱ ሲደርስ ይለቀዋል");
+      notify("✅ Upload ተጠናቀቀ!",v.title+" → "+v.date+" "+v.time+" ላይ ይለቃል");
+    } else {
+      v.status="posted";
+      incTodayPosted();
+      delete fileStore[id]; delFile(id);
+      showToast("🎉 ቪድዮ YouTube ላይ ተለቋል!");
+      notify("🎉 ቪድዮ ተለቋል!",v.title+" YouTube ላይ አለ");
+    }
+  }catch(e){
+    console.error(e); v.status="queued"; v.progress=0;
+    showToast("❌ "+e.message);
+  }
+  uploadingId=null; saveVideos(); renderQueue(); updateDailyBanner();
+}
+
+function xhrUpload(uri,file,videoId,ft){
+  return new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.open("PUT",uri,true);
+    xhr.setRequestHeader("Content-Type",ft||file.type||"video/mp4");
+    xhr.upload.onprogress=e=>{
+      if(!e.lengthComputable) return;
+      const pct=Math.round((e.loaded/e.total)*95);
+      const v=videos.find(x=>x.id===videoId);
+      if(v) v.progress=pct;
+      const bar=document.querySelector(`#item-${videoId} .progress-fill`);
+      const lbl=document.querySelector(`#item-${videoId} .progress-pct`);
+      if(bar) bar.style.width=pct+"%";
+      if(lbl) lbl.textContent=pct+"%";
+    };
+    xhr.onload=()=>{
+      if(xhr.status>=200&&xhr.status<300){try{resolve(JSON.parse(xhr.responseText));}catch(e){resolve({id:""}); }}
+      else reject(new Error("Upload ስህተት "+xhr.status));
+    };
+    xhr.onerror=()=>reject(new Error("Network error"));
+    xhr.ontimeout=()=>reject(new Error("Timeout"));
+    xhr.timeout=0; xhr.send(file);
+  });
+}
+
+async function checkCopyright(videoId,tk){
+  if(!videoId) return null;
+  for(let i=0;i<6;i++){
+    await sleep(5000);
+    try{
+      const r=await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?part=processingDetails,contentDetails,status&id=${videoId}`,
+        {headers:{Authorization:"Bearer "+tk}});
+      const d=await r.json(); const item=d.items?.[0];
+      if(!item) continue;
+      const proc=item.processingDetails?.processingStatus;
+      if(proc==="processing"||item.status?.uploadStatus==="uploaded") continue;
+      if(item.contentDetails?.licensedContent===true){
+        return{flagged:true,
+          message:"Content ID Match — ቪድዮህ ከሌላ ቀደም ካለ ቪድዮ ጋር ተመሳሳይ ነው",
+          studioLink:`https://studio.youtube.com/video/${videoId}/copyright`,
+          watchLink:`https://www.youtube.com/watch?v=${videoId}`};
+      }
+      return{flagged:false};
+    }catch(e){}
+  }
+  return{flagged:false};
+}
+
+// ─── RENDER ───────────────────────────────────────────────
+function renderQueue(){
+  const el=document.getElementById("queue");
+  updateStats();
+  if(!videos.length){
+    el.innerHTML=`<div class="empty"><div class="empty-icon">📭</div>
+      <div class="empty-title">ቪድዮ የለም</div>
+      <div>+ ቪድዮ ጨምር ቁልፍ ጫን ወይም 🗓️ Auto ጫን</div></div>`;
+    return;
+  }
+  el.innerHTML=videos.map((v,i)=>`
+    <div class="q-item" id="item-${v.id}">
+      <div class="q-num">${String(i+1).padStart(2,"0")}</div>
+      <div class="q-thumb" onclick="previewVideo(${v.id})" title="▶ Play">
+        ${v.emoji}<span style="font-size:8px;color:var(--muted)">▶</span>
+      </div>
+      <div class="q-info">
+        <div class="q-title">${escH(v.title)}</div>
+        <div class="q-meta">
+          <span>🔒 ${v.privacy}</span>
+          ${v.tags?`<span>🏷️ ${escH(v.tags)}</span>`:""}
+          ${v.fileName?`<span>📁 ${escH(v.fileName.length>16?v.fileName.slice(0,14)+"…":v.fileName)}</span>`:""}
+        </div>
+        ${v.status==="uploading"?`
+          <div style="margin-top:5px">
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:2px">
+              <span>⬆️ Uploading...</span><span class="progress-pct">${v.progress||0}%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${v.progress||0}%"></div></div>
+          </div>`:""}
+        ${v.status==="copyright"&&v.copyright?`
+          <div style="margin-top:6px;background:#1a0500;border:1px solid #8b2000;border-radius:8px;padding:8px 10px;font-size:11px">
+            <div style="color:#ff6b35;font-weight:700;margin-bottom:4px">⚠️ Copyright ምልክት ተገኘ</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <a href="${escH(v.copyright.studioLink)}" target="_blank"
+                style="background:#ff6b35;color:#fff;padding:3px 10px;border-radius:5px;text-decoration:none;font-size:10px;font-weight:700">📋 Studio</a>
+              <a href="${escH(v.copyright.watchLink)}" target="_blank"
+                style="background:#333;color:#fff;padding:3px 10px;border-radius:5px;text-decoration:none;font-size:10px">▶ ተመልከት</a>
+            </div>
+          </div>`:""}
+        ${v.status==="posted"&&v.youtubeId?`
+          <a href="https://www.youtube.com/watch?v=${escH(v.youtubeId)}" target="_blank"
+            style="color:var(--green);font-size:11px;text-decoration:none;display:block;margin-top:4px">
+            ▶ YouTube ላይ ተመልከት →
+          </a>`:""}
+        ${v.status==="scheduled_yt"?`
+          <div style="font-size:10px;color:var(--purple);margin-top:4px">
+            🟣 ${v.date} ${v.time} ሰዓቱ ሲደርስ YouTube ይለቀዋል
+          </div>`:""}
+        ${v.status==="scheduled"?`
+          <div class="sched-indicator"><span class="sched-dot"></span> ${v.date} ${v.time} ቀጠሮ ተይዟል</div>
+        `:""}
+      </div>
+      <div class="q-right">
+        <span class="badge ${v.status==="copyright"||v.status==="scheduled_yt"?v.status:v.status}">
+          ${v.status==="queued"?"⏳ Queue":""}
+          ${v.status==="scheduled"?"📅 ቀጠሮ":""}
+          ${v.status==="scheduled_yt"?"🟣 YT ቀጠሮ":""}
+          ${v.status==="posted"?"✅ Live":""}
+          ${v.status==="uploading"?"⬆️ ...":""}
+          ${v.status==="copyright"?"⚠️ CR":""}
+        </span>
+        <div class="q-date">${v.date}</div>
+        <div class="q-time-text">${v.time}</div>
+        <div class="q-actions">
+          <button class="icon-btn" onclick="previewVideo(${v.id})" title="Play">▶</button>
+          ${v.status!=="uploading"?`<button class="icon-btn up" onclick="uploadVideo(${v.id})" title="Upload">⬆️</button>`:""}
+          <button class="icon-btn" onclick="editVideo(${v.id})" title="አስተካክል">✏️</button>
+          <button class="icon-btn" onclick="deleteVideo(${v.id})" title="ሰርዝ">🗑️</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function updateStats(){
+  document.getElementById("s-total").textContent   = videos.length;
+  document.getElementById("s-queued").textContent  = videos.filter(v=>v.status==="queued"||v.status==="scheduled").length;
+  document.getElementById("s-sched").textContent   = videos.filter(v=>v.status==="scheduled_yt").length;
+  document.getElementById("s-posted").textContent  = videos.filter(v=>v.status==="posted").length;
+}
+
+// ─── SCHEDULER (every 30s) ────────────────────────────────
+async function checkScheduler(){
+  // ⛔ Browser auto-post disabled — GitHub Actions ብቻ ይለቃል
+  // Prevents duplicate uploads when browser tab is open
+  return;
+}
+
+// ─── HELPERS ──────────────────────────────────────────────
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function escH(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function notify(title,body){
+  if("Notification" in window&&Notification.permission==="granted")
+    new Notification(title,{body,icon:"https://img.icons8.com/color/96/youtube-play.png"});
+}
+let toastTimer;
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.style.display="block";
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.style.display="none",4000);
+}
+function scheduleRefresh(){
+  const remaining=tokenExpiry-Date.now()-5*60*1000;
+  if(remaining<=0){getValidToken().then(()=>scheduleRefresh());return;}
+  setTimeout(()=>getValidToken().then(()=>scheduleRefresh()),remaining);
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+async function init(){
+  await handleCode();
+  updateUI();
+  renderQueue();
+  updateDailyBanner();
+  if(refreshToken||isLoggedIn()){
+    scheduleRefresh();
+    if(!selectedChId) fetchChannels();
+  }
+  setInterval(checkScheduler,30000);
+  setInterval(updateDailyBanner,60000);
+  checkScheduler();
+  updateGistUI();
+  // Auto-pull from Gist on load to get latest statuses
+  if(GIST_ID && GIST_PAT) setTimeout(pullFromGist, 2000);
+}
+
+init();
+</script>
+</body>
+</html>
